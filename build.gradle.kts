@@ -47,6 +47,10 @@ allprojects {
                 kotlinOptions {
                     jvmTarget = "1.8"
                 }
+                java {
+                    sourceCompatibility = JavaVersion.VERSION_1_8
+                    targetCompatibility = JavaVersion.VERSION_1_8
+                }
             }
         }
 
@@ -108,6 +112,10 @@ allprojects {
         archiveClassifier.set("javadoc")
     }
 
+    // TODO: Maybe some more elegant way of making "build module" work (VS "build project")
+    if (name != "ton-kotlin-liteclient")
+        tasks.register("testClasses") {}
+
     publishing {
         publications.withType<MavenPublication> {
             artifact(javadocJar.get())
@@ -166,6 +174,40 @@ kotlin {
             }
         }
     }
+
+    val assembleJar = tasks.register<Jar>("assembleJar") {
+        archiveClassifier.set("all")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        dependencies {
+            subprojects {
+                val jvmJar = tasks.findByPath("jvmJar")
+                if (jvmJar != null) {
+                    // logger.lifecycle("add: " + jvmJar.outputs.files.asPath)
+                    from(jvmJar.inputs.files)
+                    dependsOn(jvmJar)
+                }
+//                    val jvmSrcJar = tasks.findByPath("jvmSourcesJar")
+//                    if (jvmSrcJar != null) {
+//                        from(jvmSrcJar.inputs.files)
+//                        dependsOn(jvmSrcJar)
+//                    }
+            }
+        }
+        logger.lifecycle("out (all): " + this.outputs.files.asPath)
+    }
+
+    val copyToProject = tasks.register("copyToProject") {
+        val dest = file("../QuarkTONWallet/libs/")
+        if (dest.exists()) {
+            copy {
+                from(assembleJar.get().outputs)
+                into(dest)
+            }
+        }
+    }
+
+    assembleJar.get().finalizedBy(copyToProject)
+    tasks.findByPath("assemble")?.finalizedBy(assembleJar)
 }
 
 nexusPublishing {

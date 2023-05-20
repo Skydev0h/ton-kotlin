@@ -5,5 +5,10 @@ kotlin {
                 implementation(projects.tonKotlinCrypto)
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 }

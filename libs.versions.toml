@@ -1,5 +1,5 @@
 [versions]
-coroutines = "1.7.0-Beta" # https://search.maven.org/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
+coroutines = "1.7.1" # https://search.maven.org/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
 datetime = "0.4.0" # https://search.maven.org/artifact/org.jetbrains.kotlinx/kotlinx-datetime
 atomicfu = "0.20.0" # https://search.maven.org/artifact/org.jetbrains.kotlinx/atomicfu
 benchmark = "0.4.7" # https://search.maven.org/artifact/org.jetbrains.kotlinx/kotlinx-benchmark-runtime
